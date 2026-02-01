@@ -1,38 +1,61 @@
-.App {
+body{
+  box-sizing: border-box;
+  background: #222;
+}
+.app {
+  background: linear-gradient(135deg, #05f4b4, #593c88);
+
+  width: 90%;
+  max-width: 470px;
+  padding: 40px 35px;
+  margin: 100px auto 0;
+  border-radius: 20px;
+}
+.container {
+  display: flex;
+  justify-content: center;
+}
+.displaybox {
+  display: flex;
+  justify-content: center;
+}
+h1 {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  color: #fff;
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.search {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
 }
-
-.App-link {
-  color: #61dafb;
+input {
+  width: 300px;
+  
+  height: 1rem;
+  background: #fff;
+  color: #0c0b0b;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  padding: 15px;
 }
+button {
+  background: none;
+  cursor: pointer;
+  border: none;
+  font-size: larger;
+  color: #fff;
+  margin: 5px;
+}
+p {
+  color: #fff;
+  font-size: 20px;
+}
+.weather-description{
+  display: flex;
+  
+  justify-content: space-around;
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

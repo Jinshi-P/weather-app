@@ -1,23 +1,147 @@
-import logo from './logo.svg';
+
+import { useState } from 'react';
 import './App.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
+
+  const [city, setCity] = useState('');
+  const [weather, setWeather] = useState(null);
+  const [error, setError] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+
+  const apiKey = process.env.REACT_APP_WEATHER_API;
+
+  
+
+  const fetchSuggestions = async (input) => {
+    if (input.length > 2) {
+      try {
+        const response = await fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${input}`,
+          {
+            method: 'GET',
+            headers: {
+              'x-rapidapi-key': process.env.REACT_APP_RAPID_API,
+              'x-rapidapi-host': 'wft-geo-db.p.rapidapi.com'
+            }
+          });
+        const data = await response.json();
+        if (response.ok) {
+          setSuggestions(data.data);
+        } else {
+          setWeather('')
+        }
+
+
+      } catch (error) {
+        setError('Error fetching city suggestions')
+      }
+
+    } else {
+      setSuggestions([]);
+
+    }
+
+
+  }
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+    setError('');
+    setWeather(null);
+
+    if (city) {
+      
+    try {
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setWeather(data);
+        setCity("");
+        setError('')
+        console.log(data)
+
+      } else {
+        setError(data.message)
+
+
+      }
+
+    } catch (error) {
+      setError('Failed to fetch weather data')
+
+
+    }
+      setSuggestions([])
+
+    } else {
+      setError('Please enter a city name')
+
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app'>
+      <div className='container'>
+        <form onSubmit={handleSubmit}>
+
+          <div className='search'>
+
+            <input type="text"
+              placeholder='Enter city...'
+              value={city}
+              onChange={(e) => { setWeather(null); setCity(e.target.value); fetchSuggestions(e.target.value) }}
+            />
+            <button type='submit'> <FontAwesomeIcon icon={faSearch} size="lg" /></button>
+          </div>
+
+          {/* to display suggestions */}
+          <ul style={{ cursor: "pointer" }}>
+            {suggestions.map((suggestion) => (
+              <li key={suggestion.id}
+                onClick={() => {
+                  setCity(suggestion.city)
+                  setSuggestions([])
+                }}
+                style={{ listStyleType: "none" }}>
+                {suggestion.city}
+              </li>
+            ))
+            }
+          </ul>
+        </form>
+      </div>
+      <div className='displaybox'>
+        {
+          error && <p style={{ color: 'red', fontSize: '28px' }}>{error}</p>
+        }
+        {
+          weather &&
+          <div>
+            <img
+              src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+              alt="Weather Icon"
+            />
+            <h1> {Math.round(weather.main.temp - 273.15).toFixed(0)}°C</h1>
+
+            <h1>{weather.name}</h1>
+
+
+            <h1>{weather.weather[0].description}</h1>
+            <div className='weather-details'>
+              <div className=''>
+                <p>Humidity: {weather.main.humidity}%</p></div>
+              <div className=''><p>Wind Speed: {weather.wind.speed} m/s</p></div>
+            </div>
+
+          </div>
+        }
+      </div>
+
     </div>
   );
 }
