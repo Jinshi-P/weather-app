@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+
 
 function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
+  const inputRef=useRef()
 
   const apiKey = process.env.REACT_APP_WEATHER_API;
+
+  useEffect(()=>{
+    inputRef.current.focus()
+  },[])
 
   const weatherData = async (city) => {
     if (city) {
@@ -18,6 +24,7 @@ function App() {
           `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`,
         );
         const data = await response.json();
+      console.log(data)
         if (response.ok) {
           setWeather(data);
           setCity("");
@@ -76,6 +83,7 @@ function App() {
         <form onSubmit={handleSubmit}>
           <div className="search">
             <input
+             ref={inputRef}
               type="text"
               placeholder="Enter city..."
               value={city}
@@ -103,7 +111,7 @@ function App() {
 
                   setSuggestions([]);
                 }}
-                style={{ listStyleType: "none" }}
+                style={{ listStyleType: "none" ,color:"white"}}
               >
                 {suggestion.city}
               </li>
@@ -115,13 +123,14 @@ function App() {
         {error && <p style={{ color: "red", fontSize: "28px" }}>{error}</p>}
         {weather && (
           <div style={{width:" 100%"}}>
-            <img 
-              src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-              alt="Weather Icon"
-            />
+            { (weather.weather[0].id>=701 && weather.weather[0].id<=781)
+            ?<img src="./icons/atmosphere.png" alt="weather icon"/>
+            :<img src={`./icons/${weather.weather[0].main}.png`} alt="Weather Icon"/>
+            }
+
             <h1> {Math.round(weather.main.temp - 273.15).toFixed(0)}°C</h1>
 
-            <h1>{weather.name}</h1>
+            <h2>{weather.name}</h2>
 
             <h1>{weather.weather[0].description}</h1>
             <div className="weather-details" >

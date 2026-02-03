@@ -20,12 +20,13 @@ body{
   justify-content: center;
   
 }
-h1 {
+h1 ,h2{
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   color: #fff;
   text-align: center;
 }
+
 .search {
   display: flex;
   justify-content: space-between;
@@ -63,5 +64,7 @@ p {
 img{
 margin: auto;
 display: block;
+width:6em;
+height:6em;
 
 }
